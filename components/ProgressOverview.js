@@ -1,32 +1,30 @@
 'use client'
 
+/**
+ * ProgressOverview — View component.
+ * Bug fix: sPct/cPct were strings ('—') when sum=0, causing CSS width to break.
+ * Now receives normalised metrics from the model layer.
+ */
+import { fmtTH } from '@/lib/models'
 import styles from './ProgressOverview.module.css'
 import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer } from 'recharts'
 
-export default function ProgressOverview({ data }) {
-  const { budget, allocation, tone, risk } = data
-  const used = budget.used
-  const target = budget.target
-  const remain = Math.max(0, target - used)
-  const rate = (used / target) * 100
-  const fmt = (n) => n.toLocaleString('th-TH')
+/**
+ * @param {{ metrics: import('@/lib/models').CampaignMetrics, data: import('@/lib/data').CampaignData }} props
+ */
+export default function ProgressOverview({ metrics, data }) {
+  const {
+    used, target, remaining, completionRate,
+    supportUsed, counterUsed, supportPct, counterPct,
+    pieUsage, pieAllocation,
+  } = metrics
 
-  // Normalize allocation
-  const s = allocation.supportUsed
-  const c = allocation.counterUsed
-  const sum = s + c
-  const sPct = sum > 0 ? ((s / sum) * 100).toFixed(1) : '—'
-  const cPct = sum > 0 ? ((c / sum) * 100).toFixed(1) : '—'
-
-  const pieData = [
-    { name: 'Used', value: used, color: '#1a56e0' },
-    { name: 'Remaining', value: remain, color: '#e8eaf2' },
-  ]
-
-  const allocationPieData = [
-    { name: 'Support', value: s, color: '#059669' },
-    { name: 'Response', value: c, color: '#dc2626' },
-  ]
+  const tooltipStyle = {
+    background: '#fff',
+    border: '1px solid #dde1f0',
+    borderRadius: 10,
+    fontSize: 12,
+  }
 
   return (
     <div className={styles.panel}>
@@ -38,11 +36,11 @@ export default function ProgressOverview({ data }) {
         <div className={styles.statusPills}>
           <div className={styles.pill}>
             <span className={styles.pillLabel}>Narrative Tone</span>
-            <span className={`${styles.pillVal} ${styles.blue}`}>{tone}</span>
+            <span className={`${styles.pillVal} ${styles.blue}`}>{data.tone}</span>
           </div>
           <div className={styles.pill}>
             <span className={styles.pillLabel}>Risk</span>
-            <span className={`${styles.pillVal} ${styles.green}`}>{risk}</span>
+            <span className={`${styles.pillVal} ${styles.green}`}>{data.risk}</span>
           </div>
         </div>
       </div>
@@ -52,40 +50,40 @@ export default function ProgressOverview({ data }) {
         <div className={styles.progressSection}>
           <div className={styles.progressTop}>
             <span className={styles.progressLabel}>Completion Rate</span>
-            <span className={styles.progressPct}>{rate.toFixed(1)}%</span>
+            <span className={styles.progressPct}>{completionRate.toFixed(1)}%</span>
           </div>
           <div className={styles.progressTrack}>
-            <div className={styles.progressFill} style={{ width: `${Math.min(100, rate)}%` }} />
+            <div className={styles.progressFill} style={{ width: `${Math.min(100, completionRate)}%` }} />
           </div>
           <div className={styles.progressStats}>
-            <span>Deployed: <strong>{fmt(used)}</strong></span>
-            <span>Target: <strong>{fmt(target)}</strong></span>
-            <span>Remaining: <strong>{fmt(remain)}</strong></span>
+            <span>Deployed: <strong>{fmtTH(used)}</strong></span>
+            <span>Target: <strong>{fmtTH(target)}</strong></span>
+            <span>Remaining: <strong>{fmtTH(remaining)}</strong></span>
           </div>
         </div>
 
         {/* Charts Row */}
         <div className={styles.chartsRow}>
-          {/* Donut - Used vs Remaining */}
+          {/* Donut — Usage */}
           <div className={styles.chartCard}>
             <div className={styles.chartTitle}>Budget Usage</div>
-            <ResponsiveContainer width="100%" height={140}>
-              <PieChart>
-                <Pie data={pieData} cx="50%" cy="50%" innerRadius={42} outerRadius={60} startAngle={90} endAngle={-270} dataKey="value" strokeWidth={0}>
-                  {pieData.map((entry, i) => <Cell key={i} fill={entry.color} />)}
-                </Pie>
-                <Tooltip
-                  formatter={(v) => [v.toLocaleString('th-TH'), '']}
-                  contentStyle={{ background: '#fff', border: '1px solid #dde1f0', borderRadius: 10, fontSize: 12 }}
-                />
-              </PieChart>
-            </ResponsiveContainer>
-            <div className={styles.chartCenter}>
-              <span className={styles.chartBig}>{rate.toFixed(0)}%</span>
-              <span className={styles.chartSub}>used</span>
+            <div className={styles.chartRelative}>
+              <ResponsiveContainer width="100%" height={140}>
+                <PieChart>
+                  <Pie data={pieUsage} cx="50%" cy="50%" innerRadius={42} outerRadius={60}
+                    startAngle={90} endAngle={-270} dataKey="value" strokeWidth={0}>
+                    {pieUsage.map((entry, i) => <Cell key={i} fill={entry.color} />)}
+                  </Pie>
+                  <Tooltip formatter={(v) => [fmtTH(v), '']} contentStyle={tooltipStyle} />
+                </PieChart>
+              </ResponsiveContainer>
+              <div className={styles.chartCenterOverlay}>
+                <span className={styles.chartBig}>{completionRate.toFixed(0)}%</span>
+                <span className={styles.chartSub}>used</span>
+              </div>
             </div>
             <div className={styles.chartLegend}>
-              {pieData.map((d) => (
+              {pieUsage.map((d) => (
                 <span key={d.name} className={styles.legendItem}>
                   <span className={styles.legendDot} style={{ background: d.color }} />
                   {d.name}
@@ -94,28 +92,26 @@ export default function ProgressOverview({ data }) {
             </div>
           </div>
 
-          {/* Donut - Allocation */}
+          {/* Donut — Allocation */}
           <div className={styles.chartCard}>
             <div className={styles.chartTitle}>Support vs Response</div>
             <ResponsiveContainer width="100%" height={140}>
               <PieChart>
-                <Pie data={allocationPieData} cx="50%" cy="50%" innerRadius={42} outerRadius={60} startAngle={90} endAngle={-270} dataKey="value" strokeWidth={0}>
-                  {allocationPieData.map((entry, i) => <Cell key={i} fill={entry.color} />)}
+                <Pie data={pieAllocation} cx="50%" cy="50%" innerRadius={42} outerRadius={60}
+                  startAngle={90} endAngle={-270} dataKey="value" strokeWidth={0}>
+                  {pieAllocation.map((entry, i) => <Cell key={i} fill={entry.color} />)}
                 </Pie>
-                <Tooltip
-                  formatter={(v) => [v.toLocaleString('th-TH'), '']}
-                  contentStyle={{ background: '#fff', border: '1px solid #dde1f0', borderRadius: 10, fontSize: 12 }}
-                />
+                <Tooltip formatter={(v) => [fmtTH(v), '']} contentStyle={tooltipStyle} />
               </PieChart>
             </ResponsiveContainer>
             <div className={styles.chartLegend}>
               <span className={styles.legendItem}>
                 <span className={styles.legendDot} style={{ background: '#059669' }} />
-                Support {sPct}%
+                Support {supportPct.toFixed(1)}%
               </span>
               <span className={styles.legendItem}>
                 <span className={styles.legendDot} style={{ background: '#dc2626' }} />
-                Response {cPct}%
+                Response {counterPct.toFixed(1)}%
               </span>
             </div>
           </div>
@@ -127,20 +123,22 @@ export default function ProgressOverview({ data }) {
               <div className={styles.allocBar}>
                 <div className={styles.allocLabel}>Support</div>
                 <div className={styles.barTrack}>
-                  <div className={styles.barFillGreen} style={{ width: `${sPct}%` }} />
+                  {/* Bug fix: supportPct is now always a number (from model), not '—' */}
+                  <div className={styles.barFillGreen} style={{ width: `${supportPct.toFixed(1)}%` }} />
                 </div>
-                <div className={styles.allocNum}>{fmt(s)}</div>
+                <div className={styles.allocNum}>{fmtTH(supportUsed)}</div>
               </div>
               <div className={styles.allocBar}>
                 <div className={styles.allocLabel}>Response</div>
                 <div className={styles.barTrack}>
-                  <div className={styles.barFillRed} style={{ width: `${cPct}%` }} />
+                  <div className={styles.barFillRed} style={{ width: `${counterPct.toFixed(1)}%` }} />
                 </div>
-                <div className={styles.allocNum}>{fmt(c)}</div>
+                <div className={styles.allocNum}>{fmtTH(counterUsed)}</div>
               </div>
             </div>
             <div className={styles.execNote}>
-              การตอบโต้กระจายหลายโพสต์เพื่อลดความเสี่ยง spike เชิงลบ และรักษาภาพรวมการสนทนาให้อยู่ในโทนบวก
+              การตอบโต้กระจายหลายโพสต์เพื่อลดความเสี่ยง spike เชิงลบ
+              และรักษาภาพรวมการสนทนาให้อยู่ในโทนบวก
             </div>
           </div>
         </div>

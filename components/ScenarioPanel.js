@@ -1,22 +1,21 @@
 'use client'
 
+/**
+ * ScenarioPanel — View component.
+ * Chart data and risk config sourced from model/constants.
+ */
 import { useState } from 'react'
+import { scenarioChartData } from '@/lib/models'
+import { RISK_CFG } from '@/lib/constants'
 import styles from './ScenarioPanel.module.css'
 import {
-  LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ReferenceLine
+  LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ReferenceLine,
 } from 'recharts'
-
-const RISK_COLOR = { Low: 'green', Medium: 'amber', High: 'red' }
-const RISK_LABEL = { Low: 'ความเสี่ยงต่ำ', Medium: 'ความเสี่ยงกลาง', High: 'ความเสี่ยงสูง' }
 
 export default function ScenarioPanel({ scenarios }) {
   const [active, setActive] = useState('A')
   const sc = scenarios[active]
-
-  const chartData = sc.line.map((v, i) => ({
-    day: `D+${i}`,
-    value: v,
-  }))
+  const chartData = scenarioChartData(sc.line)
 
   return (
     <div className={styles.panel}>
@@ -75,8 +74,8 @@ export default function ScenarioPanel({ scenarios }) {
             </div>
             <div className={styles.metric}>
               <span className={styles.metricLabel}>Risk Level</span>
-              <span className={`${styles.riskBadge} ${styles[RISK_COLOR[sc.riskLevel]]}`}>
-                {RISK_LABEL[sc.riskLevel]}
+              <span className={`${styles.riskBadge} ${styles[RISK_CFG[sc.riskLevel]?.color ?? 'gray']}`}>
+                {RISK_CFG[sc.riskLevel]?.label ?? sc.riskLevel}
               </span>
             </div>
           </div>

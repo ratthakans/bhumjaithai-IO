@@ -135,7 +135,9 @@
   gap: 8px;
 }
 
-.engBar {
+/* MiniBar variant tracks */
+.engBar_blue,
+.engBar_green {
   width: 60px;
   height: 6px;
   background: var(--surface3);
@@ -144,16 +146,15 @@
   border: 1px solid var(--border);
 }
 
-.engBarGreen { } /* same style */
-
+/* MiniBar variant fills */
 .engFill {
   height: 100%;
-  background: var(--blue);
   border-radius: var(--r-full);
   transition: width 0.8s var(--ease);
 }
 
-.engFillGreen { background: var(--green); }
+.engFill_blue  { background: var(--blue); }
+.engFill_green { background: var(--green); }
 
 .engNum {
   font-size: 11px;

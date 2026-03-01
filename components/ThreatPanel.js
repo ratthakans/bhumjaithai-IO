@@ -1,23 +1,34 @@
 'use client'
 
+/**
+ * ThreatPanel — View component.
+ * Config-driven: threat colours/labels come from constants, not inline logic.
+ */
+import { THREAT_STATUS_CFG, THREAT_PRIORITY_CFG } from '@/lib/constants'
 import styles from './ThreatPanel.module.css'
 
-const PRIORITY_CONFIG = {
-  High: { color: 'red', label: 'สูง', icon: '🔴' },
-  Medium: { color: 'amber', label: 'กลาง', icon: '🟡' },
-  Low: { color: 'green', label: 'ต่ำ', icon: '🟢' },
+function PriorityBadge({ priority }) {
+  const cfg = THREAT_PRIORITY_CFG[priority] ?? { color: 'gray', label: priority }
+  return (
+    <span className={`${styles.badge} ${styles[`badge_${cfg.color}`]}`}>
+      {cfg.label}
+    </span>
+  )
 }
 
-const STATUS_CONFIG = {
-  Monitoring: { color: 'blue', label: 'กำลังติดตาม' },
-  Contained: { color: 'green', label: 'ควบคุมได้' },
-  Watching: { color: 'violet', label: 'เฝ้าระวัง' },
-  Responding: { color: 'amber', label: 'กำลังตอบโต้' },
+function StatusBadge({ status }) {
+  const cfg = THREAT_STATUS_CFG[status] ?? { color: 'gray', label: status }
+  return (
+    <span className={`${styles.statusBadge} ${styles[`status_${cfg.color}`]}`}>
+      {cfg.label}
+    </span>
+  )
 }
 
+/** @param {{ threats: import('@/lib/data').Threat[] }} props */
 export default function ThreatPanel({ threats }) {
-  const high = threats.filter(t => t.priority === 'High').length
-  const active = threats.filter(t => t.status === 'Responding' || t.status === 'Monitoring').length
+  const critical = threats.filter((t) => t.priority === 'High').length
+  const active = threats.filter((t) => t.status === 'Monitoring' || t.status === 'Responding').length
 
   return (
     <div className={styles.panel}>
@@ -28,7 +39,7 @@ export default function ThreatPanel({ threats }) {
         </div>
         <div className={styles.summary}>
           <div className={`${styles.summaryItem} ${styles.red}`}>
-            <span className={styles.summaryNum}>{high}</span>
+            <span className={styles.summaryNum}>{critical}</span>
             <span className={styles.summaryLabel}>Critical</span>
           </div>
           <div className={`${styles.summaryItem} ${styles.amber}`}>
@@ -43,33 +54,29 @@ export default function ThreatPanel({ threats }) {
       </div>
 
       <div className={styles.list}>
-        {threats.map((threat) => {
-          const pCfg = PRIORITY_CONFIG[threat.priority]
-          const sCfg = STATUS_CONFIG[threat.status]
+        {threats.map((t) => {
+          const priorityCfg = THREAT_PRIORITY_CFG[t.priority] ?? { color: 'gray' }
           return (
-            <div key={threat.id} className={`${styles.item} ${styles['border_' + pCfg.color]}`}>
-              <div className={styles.itemTop}>
-                <div className={styles.itemLeft}>
-                  <span className={`${styles.priorityBadge} ${styles[pCfg.color]}`}>
-                    {pCfg.icon} {threat.priority}
-                  </span>
-                  <span className={styles.threatType}>{threat.type}</span>
-                </div>
-                <div className={styles.itemRight}>
-                  <span className={`${styles.statusBadge} ${styles['status_' + sCfg.color]}`}>
-                    {sCfg.label}
-                  </span>
-                  <span className={styles.time}>{threat.time}</span>
-                </div>
+            <div
+              key={t.id}
+              className={`${styles.threatItem} ${styles[`border_${priorityCfg.color}`]}`}
+            >
+              <div className={styles.threatTop}>
+                <PriorityBadge priority={t.priority} />
+                <span className={styles.threatType}>{t.type}</span>
+                <StatusBadge status={t.status} />
+                <span className={styles.threatTime}>{t.time}</span>
               </div>
-              <p className={styles.message}>{threat.message}</p>
-              <div className={styles.platform}>
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/>
-                  <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
-                </svg>
-                {threat.platform}
-                <span className={styles.threatId}>{threat.id}</span>
+              <p className={styles.threatMsg}>{t.message}</p>
+              <div className={styles.threatMeta}>
+                <span className={styles.platformTag}>
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <circle cx="12" cy="12" r="10" /><line x1="2" y1="12" x2="22" y2="12" />
+                    <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
+                  </svg>
+                  {t.platform}
+                </span>
+                <span className={styles.threatId}>{t.id}</span>
               </div>
             </div>
           )

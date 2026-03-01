@@ -1,35 +1,60 @@
 'use client'
 
+/**
+ * PostTables — View component.
+ * Badge colour configs sourced from constants layer.
+ */
+import { POST_STATUS_CFG, ROLE_COLOR_MAP } from '@/lib/constants'
 import styles from './PostTables.module.css'
 
-const STATUS_CFG = {
-  Completed: { color: 'green', label: 'Completed' },
-  Active: { color: 'amber', label: 'Active' },
-}
+/** External link icon — shared between tables. */
+const ExternalIcon = (
+  <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+    <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
+    <polyline points="15 3 21 3 21 9" />
+    <line x1="10" y1="14" x2="21" y2="3" />
+  </svg>
+)
 
 function StatusBadge({ status }) {
-  const cfg = STATUS_CFG[status] || { color: 'blue', label: status }
-  return <span className={`${styles.badge} ${styles['badge_' + cfg.color]}`}>{cfg.label}</span>
+  const cfg = POST_STATUS_CFG[status] ?? { color: 'blue', label: status }
+  return <span className={`${styles.badge} ${styles[`badge_${cfg.color}`]}`}>{cfg.label}</span>
 }
 
 function RoleBadge({ role }) {
-  const colorMap = {
-    'Direct Response': 'red',
-    'Soft Counter': 'amber',
-    'Fact Challenge': 'blue',
-    'Emotional Neutralize': 'violet',
-    'Containment': 'teal',
-  }
-  const color = colorMap[role] || 'blue'
-  return <span className={`${styles.badge} ${styles['badge_' + color]}`}>{role}</span>
+  const color = ROLE_COLOR_MAP[role] ?? 'blue'
+  return <span className={`${styles.badge} ${styles[`badge_${color}`]}`}>{role}</span>
 }
 
+function MiniBar({ fill, pct, variant = 'blue' }) {
+  // Ensure pct is always a valid number for CSS width
+  const safePct = typeof pct === 'number' ? Math.min(100, Math.max(0, pct)) : 0
+  return (
+    <div className={styles.engagementWrap}>
+      <div className={`${styles.engBar} ${styles[`engBar_${variant}`]}`}>
+        <div
+          className={`${styles.engFill} ${styles[`engFill_${variant}`]}`}
+          style={{ width: `${safePct}%` }}
+        />
+      </div>
+      <span className={styles.engNum}>{fill}</span>
+    </div>
+  )
+}
+
+/**
+ * @param {{
+ *   supportPosts: import('@/lib/data').SupportPost[],
+ *   counterPosts: import('@/lib/data').CounterPost[]
+ * }} props
+ */
 export default function PostTables({ supportPosts, counterPosts }) {
   const supportTotal = supportPosts.reduce((a, p) => a + p.comments, 0)
   const counterTotal = counterPosts.reduce((a, p) => a + p.comments, 0)
 
   return (
     <div className={styles.wrap}>
+      {/* Support Posts */}
       <div className={styles.tableSection}>
         <div className={styles.sectionHeader}>
           <div className={styles.sectionLeft}>
@@ -57,20 +82,15 @@ export default function PostTables({ supportPosts, counterPosts }) {
               {supportPosts.map((p, i) => (
                 <tr key={i}>
                   <td>
-                    <a href={p.url} target="_blank" rel="noopener" className={styles.link}>
-                      {p.name}
-                      <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+                    <a href={p.url} target="_blank" rel="noopener noreferrer" className={styles.link}>
+                      {p.name} {ExternalIcon}
                     </a>
                   </td>
                   <td><span className={styles.typeTag}>{p.type}</span></td>
                   <td className={styles.mono}>{p.comments.toLocaleString('th-TH')}</td>
                   <td>
-                    <div className={styles.engagementWrap}>
-                      <div className={styles.engBar}>
-                        <div className={styles.engFill} style={{ width: `${(p.engagement / 5) * 100}%` }} />
-                      </div>
-                      <span className={styles.engNum}>{p.engagement}</span>
-                    </div>
+                    {/* Engagement is out of 5; convert to % for the bar */}
+                    <MiniBar fill={p.engagement} pct={(p.engagement / 5) * 100} variant="blue" />
                   </td>
                   <td><StatusBadge status={p.status} /></td>
                 </tr>
@@ -80,6 +100,7 @@ export default function PostTables({ supportPosts, counterPosts }) {
         </div>
       </div>
 
+      {/* Response Posts */}
       <div className={styles.tableSection}>
         <div className={styles.sectionHeader}>
           <div className={styles.sectionLeft}>
@@ -107,20 +128,15 @@ export default function PostTables({ supportPosts, counterPosts }) {
               {counterPosts.map((p, i) => (
                 <tr key={i}>
                   <td>
-                    <a href={p.url} target="_blank" rel="noopener" className={styles.link}>
-                      {p.name}
-                      <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+                    <a href={p.url} target="_blank" rel="noopener noreferrer" className={styles.link}>
+                      {p.name} {ExternalIcon}
                     </a>
                   </td>
                   <td><span className={styles.typeTag}>{p.type}</span></td>
                   <td className={styles.mono}>{p.comments.toLocaleString('th-TH')}</td>
                   <td>
-                    <div className={styles.engagementWrap}>
-                      <div className={`${styles.engBar} ${styles.engBarGreen}`}>
-                        <div className={`${styles.engFill} ${styles.engFillGreen}`} style={{ width: `${p.effectiveness}%` }} />
-                      </div>
-                      <span className={styles.engNum}>{p.effectiveness}%</span>
-                    </div>
+                    {/* effectiveness is already 0–100 */}
+                    <MiniBar fill={`${p.effectiveness}%`} pct={p.effectiveness} variant="green" />
                   </td>
                   <td><RoleBadge role={p.role} /></td>
                 </tr>

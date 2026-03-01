@@ -168,13 +168,22 @@
   color: var(--text-muted);
 }
 
-.chartCenter {
+/*
+ * chartRelative wraps the ResponsiveContainer so the centre overlay
+ * positions relative to the chart, not the entire card.
+ */
+.chartRelative {
+  position: relative;
+}
+
+.chartCenterOverlay {
   position: absolute;
   top: 50%;
   left: 50%;
-  transform: translate(-50%, -8%);
+  transform: translate(-50%, -10%);
   text-align: center;
   pointer-events: none;
+  z-index: 1;
 }
 
 .chartBig {
