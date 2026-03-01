@@ -1,0 +1,257 @@
+.panel {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r-xl);
+  box-shadow: var(--shadow-sm);
+  overflow: hidden;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 24px;
+  border-bottom: 1px solid var(--border);
+  background: var(--surface2);
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.headerLeft { display: flex; flex-direction: column; gap: 4px; }
+
+.sectionTag {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--blue);
+}
+
+.title {
+  font-size: 16px;
+  font-weight: 800;
+  color: var(--text-primary);
+  letter-spacing: -0.3px;
+  margin: 0;
+}
+
+.tabs {
+  display: flex;
+  gap: 6px;
+}
+
+.tab {
+  appearance: none;
+  border: 1.5px solid var(--border2);
+  background: var(--surface);
+  color: var(--text-secondary);
+  padding: 6px 16px;
+  border-radius: var(--r-full);
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s var(--ease);
+}
+
+.tab:hover {
+  background: var(--surface3);
+  transform: translateY(-1px);
+}
+
+.tabActive {
+  background: var(--blue-light) !important;
+  font-weight: 800;
+}
+
+.body {
+  display: grid;
+  grid-template-columns: 1fr 1.2fr;
+  gap: 0;
+}
+
+@media (max-width: 900px) {
+  .body { grid-template-columns: 1fr; }
+}
+
+.infoCol {
+  padding: 24px;
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.scenarioTitle {
+  font-size: 14px;
+  font-weight: 800;
+  letter-spacing: -0.3px;
+}
+
+.scenarioSubtitle {
+  font-size: 12px;
+  color: var(--text-muted);
+  font-weight: 500;
+}
+
+.description {
+  font-size: 13px;
+  color: var(--text-secondary);
+  line-height: 1.65;
+}
+
+.tacticsGrid {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.tactic {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  font-size: 13px;
+  color: var(--text-secondary);
+}
+
+.tacticDot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  margin-top: 6px;
+}
+
+.metrics {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 16px;
+  background: var(--surface2);
+  border-radius: var(--r-md);
+  border: 1px solid var(--border);
+}
+
+.metric {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.metricLabel {
+  font-size: 12px;
+  color: var(--text-muted);
+  font-weight: 600;
+  min-width: 130px;
+}
+
+.metricValue {
+  font-size: 14px;
+  font-weight: 800;
+}
+
+.metricSmall {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text-secondary);
+}
+
+.confidenceBar {
+  flex: 1;
+  height: 8px;
+  background: var(--surface3);
+  border-radius: var(--r-full);
+  overflow: hidden;
+  min-width: 80px;
+}
+
+.confidenceFill {
+  height: 100%;
+  border-radius: var(--r-full);
+  transition: width 0.8s var(--ease);
+}
+
+.riskBadge {
+  font-size: 11px;
+  font-weight: 700;
+  padding: 3px 10px;
+  border-radius: var(--r-full);
+}
+
+.green { background: var(--green-light); color: var(--green); }
+.amber { background: var(--amber-light); color: var(--amber); }
+.red { background: var(--red-light); color: var(--red); }
+
+.note {
+  font-size: 11px;
+  color: var(--text-faint);
+  line-height: 1.6;
+  padding: 10px 12px;
+  background: #fffbeb;
+  border: 1px solid rgba(217, 119, 6, 0.2);
+  border-radius: var(--r-sm);
+}
+
+.chartCol {
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.chartLabel {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.compareRow {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+}
+
+.compareCard {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 8px;
+  border: 1.5px solid var(--border);
+  border-radius: var(--r-md);
+  cursor: pointer;
+  transition: all 0.2s var(--ease);
+  background: var(--surface2);
+}
+
+.compareCard:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-sm);
+}
+
+.compareActive {
+  background: var(--blue-light);
+  border-color: var(--blue);
+}
+
+.compareId {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  color: #fff;
+  font-size: 12px;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.compareSwing {
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-align: center;
+  line-height: 1.3;
+}

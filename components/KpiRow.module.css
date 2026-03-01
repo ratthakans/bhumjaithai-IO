@@ -1,0 +1,96 @@
+.row {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+@media (max-width: 1200px) {
+  .row { grid-template-columns: repeat(3, 1fr); }
+}
+@media (max-width: 700px) {
+  .row { grid-template-columns: repeat(2, 1fr); }
+}
+
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  padding: 16px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.25s var(--ease);
+  box-shadow: var(--shadow-xs);
+}
+
+.card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  border-radius: var(--r-lg) var(--r-lg) 0 0;
+}
+
+.card:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-md);
+}
+
+/* Color variants */
+.blue::before { background: var(--grad-blue); }
+.blue .iconWrap { color: var(--blue); background: var(--blue-light); }
+.blue .value { color: var(--blue-dark); }
+
+.green::before { background: var(--grad-green); }
+.green .iconWrap { color: var(--green); background: var(--green-light); }
+.green .value { color: var(--green); }
+
+.amber::before { background: var(--grad-amber); }
+.amber .iconWrap { color: var(--amber); background: var(--amber-light); }
+.amber .value { color: var(--amber); }
+
+.violet::before { background: var(--grad-violet); }
+.violet .iconWrap { color: var(--violet); background: rgba(124, 58, 237, 0.1); }
+.violet .value { color: var(--violet); }
+
+.teal::before { background: linear-gradient(135deg, #0891b2, #059669); }
+.teal .iconWrap { color: var(--teal); background: rgba(8, 145, 178, 0.1); }
+.teal .value { color: var(--teal); }
+
+.iconWrap {
+  width: 34px;
+  height: 34px;
+  border-radius: var(--r-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 4px;
+  flex-shrink: 0;
+}
+
+.label {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  color: var(--text-muted);
+}
+
+.value {
+  font-size: 26px;
+  font-weight: 900;
+  letter-spacing: -1px;
+  color: var(--text-primary);
+  line-height: 1;
+}
+
+.hint {
+  font-size: 11px;
+  color: var(--text-faint);
+  margin-top: 2px;
+}

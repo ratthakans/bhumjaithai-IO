@@ -1,0 +1,280 @@
+.panel {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r-xl);
+  box-shadow: var(--shadow-sm);
+  overflow: hidden;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 24px;
+  border-bottom: 1px solid var(--border);
+  background: var(--surface2);
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.sectionTag {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--blue);
+}
+
+.title {
+  font-size: 16px;
+  font-weight: 800;
+  color: var(--text-primary);
+  margin: 4px 0 0;
+}
+
+.statusPills {
+  display: flex;
+  gap: 8px;
+}
+
+.pill {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 8px 14px;
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  background: var(--surface);
+}
+
+.pillLabel {
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--text-faint);
+}
+
+.pillVal {
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.blue { color: var(--blue); }
+.green { color: var(--green); }
+
+.body {
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+/* Progress Bar */
+.progressSection { display: flex; flex-direction: column; gap: 10px; }
+
+.progressTop {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.progressLabel {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+.progressPct {
+  font-size: 20px;
+  font-weight: 900;
+  color: var(--blue);
+  font-family: var(--font-mono);
+}
+
+.progressTrack {
+  height: 14px;
+  background: var(--surface3);
+  border-radius: var(--r-full);
+  overflow: hidden;
+  border: 1px solid var(--border);
+  position: relative;
+}
+
+.progressFill {
+  height: 100%;
+  background: var(--grad-blue);
+  border-radius: var(--r-full);
+  transition: width 1s var(--ease);
+  position: relative;
+}
+
+.progressFill::after {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.35), transparent);
+  animation: shimmer 2.5s ease-in-out infinite;
+}
+
+@keyframes shimmer {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+.progressStats {
+  display: flex;
+  gap: 20px;
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.progressStats strong {
+  color: var(--text-primary);
+  font-weight: 700;
+}
+
+/* Charts row */
+.chartsRow {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1.5fr;
+  gap: 16px;
+}
+
+@media (max-width: 900px) {
+  .chartsRow { grid-template-columns: 1fr 1fr; }
+}
+
+@media (max-width: 600px) {
+  .chartsRow { grid-template-columns: 1fr; }
+}
+
+.chartCard {
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  padding: 16px;
+  background: var(--surface2);
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.chartTitle {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--text-muted);
+}
+
+.chartCenter {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -8%);
+  text-align: center;
+  pointer-events: none;
+}
+
+.chartBig {
+  display: block;
+  font-size: 18px;
+  font-weight: 900;
+  color: var(--blue);
+  line-height: 1;
+}
+
+.chartSub {
+  display: block;
+  font-size: 10px;
+  color: var(--text-muted);
+  margin-top: 2px;
+}
+
+.chartLegend {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.legendItem {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 11px;
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
+.legendDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+
+/* Allocation bars */
+.allocBars {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 8px;
+}
+
+.allocBar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.allocLabel {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  min-width: 60px;
+}
+
+.barTrack {
+  flex: 1;
+  height: 10px;
+  background: var(--surface3);
+  border-radius: var(--r-full);
+  overflow: hidden;
+  border: 1px solid var(--border);
+}
+
+.barFillGreen {
+  height: 100%;
+  background: var(--green);
+  border-radius: var(--r-full);
+  transition: width 0.8s var(--ease);
+}
+
+.barFillRed {
+  height: 100%;
+  background: var(--red);
+  border-radius: var(--r-full);
+  transition: width 0.8s var(--ease);
+}
+
+.allocNum {
+  font-size: 12px;
+  font-weight: 700;
+  font-family: var(--font-mono);
+  color: var(--text-primary);
+  min-width: 50px;
+  text-align: right;
+}
+
+.execNote {
+  font-size: 11px;
+  color: var(--text-faint);
+  line-height: 1.6;
+  font-style: italic;
+  margin-top: 8px;
+  padding: 10px;
+  background: var(--surface);
+  border-radius: var(--r-sm);
+  border: 1px solid var(--border);
+}
